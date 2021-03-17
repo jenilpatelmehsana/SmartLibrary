@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/SmartLibrary.iml" filepath="$PROJECT_DIR$/.idea/SmartLibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/API/smartLibrary.iml" filepath="$PROJECT_DIR$/API/smartLibrary.iml" />
+    </modules>
+  </component>
+</project>
