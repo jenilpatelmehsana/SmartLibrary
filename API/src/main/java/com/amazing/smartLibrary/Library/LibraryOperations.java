@@ -7,13 +7,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Iterator;
-import java.util.Map;
 
 @RestController
 public class LibraryOperations {
@@ -54,31 +50,25 @@ public class LibraryOperations {
                                     @RequestParam("authorName") String authorName,
                                     @RequestParam("price") String priceString,
                                     @RequestParam("pages") String pagesString,
-                                    @RequestParam("quantity") String quantityString) {
+                                    @RequestParam("quantity") String quantityString,
+                                    @RequestParam("admin") String admin) {
         try {
-            Integer price = Integer.parseInt(priceString), pages = Integer.parseInt(pagesString);
-            Integer quantity = 1;
-            quantity = Integer.parseInt(quantityString);
-            Book newBook = new Book(bookName, authorName, price, pages);
+            Integer quantity = Integer.parseInt(quantityString), pages = Integer.parseInt(pagesString),
+                    prices = Integer.parseInt(priceString);
+            Book newBook = new Book(bookName, authorName, prices, pages);
             Query query = new Query(Criteria.where("libraryName").is(libraryName));
-            Library library = (Library) mongoOperations.findOne(query, Library.class);
-            if (library == null) return false;
-            boolean found = false;
-            Iterator iterator = library.getBooksInLibrary().entrySet().iterator();
-            while (iterator.hasNext()) {
-                Map.Entry entry = (Map.Entry) iterator.next();
-                Book current = (Book) entry.getKey();
-                if (current.getBookName().compareTo(bookName) == 0) {
-                    entry.setValue((Integer) entry.getValue() + quantity);
-                    found = true;
-                    break;
-                }
+            Library library = mongoOperations.findAndRemove(query, Library.class);
+            if (library == null) {
+                System.out.println("Library does not exist");
+                return false;
             }
-            if (!found) {
-                library.addBook(newBook, quantity);
+            if (library.getAdmin().getUserName().compareTo(admin) != 0) {
+                mongoOperations.insert(library);
+                System.out.println("only admin can insert book");
+                return false;
             }
-            Update update = new Update().set("booksInLibrary", library.getBooksInLibrary());
-            mongoOperations.findAndModify(query, update, Library.class);
+            library.addBook(newBook, quantity);
+            mongoOperations.insert(library);
             return true;
         } catch (Exception e) {
             System.out.println(e.getMessage());

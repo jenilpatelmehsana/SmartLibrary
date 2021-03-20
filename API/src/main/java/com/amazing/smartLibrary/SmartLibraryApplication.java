@@ -10,13 +10,12 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 @SpringBootApplication
 public class SmartLibraryApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(SmartLibraryApplication.class, args);
-	}
-
 	@Bean
 	public MongoOperations getMongoOperations() {
 		return new MongoTemplate(MongoClients.create(), "smartLibrary");
 	}
 
+	public static void main(String[] args) {
+		SpringApplication.run(SmartLibraryApplication.class, args);
+	}
 }

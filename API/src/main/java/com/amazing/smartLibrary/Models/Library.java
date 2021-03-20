@@ -1,14 +1,20 @@
 package com.amazing.smartLibrary.Models;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoOperations;
+
 import java.util.HashMap;
 
 public class Library {
     private String libraryName, address, city, zipcode;
     private Integer maxSeats, reservedSeats, availableSeats;
     private Double lat, lon;
-    private HashMap<Book, Integer> booksInLibrary;
+    private HashMap<String, BookObject> booksInLibrary;
     private String libraryUID;
     private User admin;
+
+    @Autowired
+    private MongoOperations mongoOperations;
 
     public Library() {
         this.booksInLibrary = new HashMap<>();
@@ -28,7 +34,12 @@ public class Library {
 
     public boolean addBook(Book newBook, Integer quantity) {
         try {
-            booksInLibrary.put(newBook, quantity);
+            if(!this.booksInLibrary.containsKey(newBook.getBookName())) {
+                this.booksInLibrary.put(newBook.getBookName(), new BookObject(newBook, quantity));
+            } else {
+                BookObject current = this.booksInLibrary.get(newBook.getBookName());
+                current.setQuantity(current.getQuantity() + quantity);
+            }
             return true;
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -116,11 +127,11 @@ public class Library {
         this.admin = admin;
     }
 
-    public HashMap<Book, Integer> getBooksInLibrary() {
+    public HashMap<String, BookObject> getBooksInLibrary() {
         return booksInLibrary;
     }
 
-    public void setBooksInLibrary(HashMap<Book, Integer> booksInLibrary) {
+    public void setBooksInLibrary(HashMap<String, BookObject> booksInLibrary) {
         this.booksInLibrary = booksInLibrary;
     }
 

@@ -1,14 +1,11 @@
 package com.amazing.smartLibrary.Authentication;
 
 import com.amazing.smartLibrary.Models.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.concurrent.ExecutionException;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class CreateUser {
