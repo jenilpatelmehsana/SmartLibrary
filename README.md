@@ -1,2 +1,8 @@
 # SmartLibrary
-College project - 6th sem
+
+Academic project - 6th sem
+
+Smart Library
+Backend :
+
+  API(Spring Boot)
