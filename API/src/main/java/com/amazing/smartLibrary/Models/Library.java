@@ -17,7 +17,6 @@ public class Library {
     private MongoOperations mongoOperations;
 
     public Library() {
-        this.booksInLibrary = new HashMap<>();
     }
 
     public Library(String libraryName, String address, String city, String zipcode, Integer maxSeats, Double lat, Double lon, User admin) {

@@ -1,11 +1,18 @@
 package com.amazing.smartLibrary.Models;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoOperations;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class City {
     private String cityName, state, cityUID;
-    private List<Library> librariesInCity;
+//    private List<Library> librariesInCity;
+    private List<String> librariesInCity;
+
+    @Autowired
+    private MongoOperations mongoOperations;
 
     public City() {
     }
@@ -18,7 +25,7 @@ public class City {
 
     public boolean addLibrary(Library newLibrary) {
         try {
-            librariesInCity.add(newLibrary);
+            this.librariesInCity.add(newLibrary.getLibraryName());
             return true;
         }catch (Exception e) {
             System.out.println(e.getMessage());
@@ -27,8 +34,9 @@ public class City {
     }
 
     public boolean removeLibrary(Library library) {
+//        TODO
         try {
-            librariesInCity.remove(library);
+            librariesInCity.remove(library.getLibraryName());
             return true;
         } catch (Exception e) {
             return false;
@@ -63,11 +71,11 @@ public class City {
         this.cityUID = cityUID;
     }
 
-    public List<Library> getLibrariesInCity() {
+    public List<String> getLibrariesInCity() {
         return librariesInCity;
     }
 
-    public void setLibrariesInCity(List<Library> librariesInCity) {
+    public void setLibrariesInCity(List<String> librariesInCity) {
         this.librariesInCity = librariesInCity;
     }
 }

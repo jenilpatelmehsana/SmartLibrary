@@ -1,6 +1,7 @@
 package com.amazing.smartLibrary.Library;
 
 import com.amazing.smartLibrary.Models.Book;
+import com.amazing.smartLibrary.Models.City;
 import com.amazing.smartLibrary.Models.Library;
 import com.amazing.smartLibrary.Models.User;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -35,13 +36,26 @@ public class LibraryOperations {
             User adminUser = null;
             Query adminQuery = new Query(Criteria.where("userName").is(admin));
             adminUser = mongoOperations.findOne(adminQuery, User.class);
+            if(adminUser == null) {
+                System.out.println("admin does not exists");
+                return false;
+            }
             Library newLibrary = new Library(libraryName, address, city, zipcode, maxSeats, lat, lon, adminUser);
             mongoOperations.insert(newLibrary);
+            addLibraryToCity(newLibrary);
             return true;
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return false;
         }
+    }
+
+    private void addLibraryToCity(Library newLibrary) {
+        City currentCity = mongoOperations.findAndRemove(new Query(Criteria.where("cityName").is(newLibrary.getCity())), City.class);
+        if(currentCity == null) currentCity = new City(newLibrary.getCity(), "state");
+        currentCity.addLibrary(newLibrary);
+        mongoOperations.insert(currentCity);
+
     }
 
     @PostMapping("/addBookToLibrary")
