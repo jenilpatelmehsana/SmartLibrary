@@ -1,5 +1,6 @@
 package com.amazing.smartLibrary.Utilities;
 
+import com.amazing.smartLibrary.Algos.CoordinateDistance;
 import com.amazing.smartLibrary.Models.City;
 import com.amazing.smartLibrary.Models.Library;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @RestController
@@ -35,5 +37,22 @@ public class FindLibrary {
         }
         return libraries;
     }
-    
+
+    @RequestMapping("/nearby-library")
+    public List<Library> nearbyLibrary(@RequestParam("lat") String lat1String,
+                                       @RequestParam("lon") String lon1String) {
+        Double lat1 = Double.parseDouble(lat1String), lon1 = Double.parseDouble(lon1String);
+        Query query = new Query();
+        List<Library> libraries = mongoOperations.find(query, Library.class);
+        List<Library> ans = new ArrayList<>();
+        Iterator iterator = libraries.iterator();
+        while (iterator.hasNext()) {
+            Library current = (Library) iterator.next();
+            if (CoordinateDistance.getDistance(lat1, lon1, current.getLat(), current.getLon()) <= 10.0) {
+                ans.add(current);
+            }
+        }
+        return ans;
+    }
+
 }
