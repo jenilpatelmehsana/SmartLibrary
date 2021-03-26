@@ -41,6 +41,7 @@ public class FindLibrary {
     @RequestMapping("/nearby-library")
     public List<Library> nearbyLibrary(@RequestParam("lat") String lat1String,
                                        @RequestParam("lon") String lon1String) {
+        System.out.println("query made");
         Double lat1 = Double.parseDouble(lat1String), lon1 = Double.parseDouble(lon1String);
         Query query = new Query();
         List<Library> libraries = mongoOperations.find(query, Library.class);
